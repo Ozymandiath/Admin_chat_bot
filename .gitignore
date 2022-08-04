@@ -1,0 +1,5 @@
+**/__pycache__
+Venv/
+.idea/
+!Privat_chat_bot.bat
+!users.db
