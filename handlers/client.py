@@ -3,7 +3,7 @@ import datetime
 from aiogram import types, Dispatcher
 from aiogram.types.message import ContentType
 from config import db, bot, YOOTOKEN
-from keyboards import kb_client_sub, kb_client_inline
+from keyboards import kb_client_sub, kb_client_inline, kb_sub_inline
 
 
 def days_to_second(days):
@@ -30,6 +30,16 @@ async def time_ban_user():
                                        f"У @{(await bot.get_chat(i))['username']}, закончилась подписка.")
                 await bot.send_message(i, "Доступ в чат закрыт. \nПродлите подписку.")
 
+
+# async def is_subscription_chanel():
+#     for i in db.user_list():
+#         user_info = await bot.get_chat_member(-1001664990040, i)
+#         if user_info["status"] == "left":
+#             try:
+#                 await bot.send_message(i, "Вы должны быть подписаны на канал", reply_markup=kb_sub_inline)
+#             except:
+#                 pass
+#
 
 async def subscription_making(message: types.Message):
     await bot.send_message(message.from_user.id, "Выберите нужное действие в меню:", reply_markup=kb_client_sub)
@@ -75,6 +85,15 @@ async def get_subscription_link(message: types.Message):
         await bot.send_message(message.from_user.id, "Оплатите подписку")
 
 
+async def referral_registration(message: types.Message):
+    me = await bot.get_me()
+    await bot.send_message(message.from_user.id, f"Ваш ID: {message.from_user.id}\n"
+                                                 f"Количество вступивших в vip-чат: 0\n"
+                                                 f"Количество рефералов: {db.get_referral_count(message.from_user.id)}\n"
+                                                 "Ваша ссылка:\n"
+                                                 f"https://t.me/{me.username}?start={message.from_user.id}")
+
+
 def registration_client(dp: Dispatcher):
     dp.register_message_handler(subscription_making, text="Подписка")
     dp.register_message_handler(get_subscription_time, text="Осталось")
@@ -83,3 +102,4 @@ def registration_client(dp: Dispatcher):
     dp.register_pre_checkout_query_handler(process_payment_sub)
     dp.register_message_handler(payment_confirmation, content_types=ContentType.SUCCESSFUL_PAYMENT)
     dp.register_message_handler(get_subscription_link, text="Вступить")
+    dp.register_message_handler(referral_registration, text="Рефералы")

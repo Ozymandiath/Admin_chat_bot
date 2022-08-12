@@ -19,3 +19,11 @@ inl_sub1 = InlineKeyboardButton("Карта ", callback_data="payment_by_card")
 inl_sub2 = InlineKeyboardButton("Криптовалюта ", callback_data="payment_crypto")
 
 kb_client_inline = InlineKeyboardMarkup(row_width=1).insert(inl_sub1).insert(inl_sub2)
+
+inl_sub = InlineKeyboardButton("CryptoInside ", url="https://t.me/insiderCryptoNr1")
+
+kb_sub_inline = InlineKeyboardMarkup(row_width=1).insert(inl_sub)
+
+sub_button = KeyboardButton("Подписался")
+
+kb_sub_button = ReplyKeyboardMarkup(resize_keyboard=True).add(sub_button)

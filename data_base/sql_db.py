@@ -12,14 +12,14 @@ class Database():
         CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY, 
             user_id INTEGER, 
-            nickname VARCHAR(100), 
+            referrer INTEGER, 
             job_title VARCHAR DEFAULT 'user', 
             subscription BOOLEAN NOT NULL DEFAULT 0)
         """)
 
-    def add_user(self, user_id, user_nickname):
+    def add_user(self, user_id, referrer_id=None):
         with self.db:
-            self.cursor.execute("INSERT INTO users(user_id, nickname) VALUES(?,?)", (user_id, user_nickname))
+            self.cursor.execute("INSERT INTO users(user_id, referrer) VALUES(?,?)", (user_id, referrer_id))
 
     def user_presence(self, user_id):
         with self.db:
@@ -55,3 +55,10 @@ class Database():
             user_time = self.cursor.execute("SELECT subscription FROM users WHERE user_id = ?",
                                             (user_id,)).fetchone()[0]
             return True if int(user_time) > int(time.time()) else False
+
+
+    def get_referral_count(self,referral_id):
+        with self.db:
+            user_count = self.cursor.execute("SELECT COUNT('ID') as count FROM users WHERE referrer = ?",
+                                             (referral_id,)).fetchone()[0]
+            return user_count
